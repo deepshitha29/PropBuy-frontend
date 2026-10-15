@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PropBuy — Property, made personal</title>
+  <link rel="stylesheet" href="/assets/app.css">
+  <link rel="stylesheet" href="/assets/routes.css">
+</head>
+<body>
+  <nav>
+    <a class="brand" href="/">prop<span>buy</span></a>
+    <div class="nav-actions">
+      <a class="auth-only" data-auth-only href="#browse">Browse</a>
+      <a class="auth-only" data-auth-only href="#how">How it works</a>
+      <a class="auth-only" data-auth-only href="#dashboard">My dashboard</a>
+      <a class="auth-only" data-auth-only href="#saved">Saved homes</a>
+      <a id="sellPropertyNav" class="auth-only" data-auth-only href="#sell-property">Sell Property</a>
+      <button id="notificationsBtn" class="ghost auth-only" data-auth-only hidden type="button">Alerts <span id="notificationCount">0</span></button>
+      <button id="loginBtn" class="ghost">Log in</button>
+      <button id="registerBtn">Get started</button>
+      <button id="logoutBtn" class="ghost auth-only" data-auth-only hidden>Log out</button>
+    </div>
+  </nav>
+
+  <section id="authGate" class="auth-gate">
+    <div class="auth-gate-card">
+      <p class="eyebrow">Welcome to PropBuy</p>
+      <h1>Your next home starts here.</h1>
+      <p>Log in to browse verified homes, save your shortlist, request visits, and sell a property from the same account.</p>
+      <div class="dashboard-actions"><button id="gateLogin" type="button">Log in</button><button id="gateRegister" class="ghost" type="button">Create an account</button></div>
+    </div>
+  </section>
+
+  <main id="appContent" hidden>
+    <section class="hero" data-route="browse">
+      <div>
+        <p class="eyebrow">A smarter way home</p>
+        <h1>Find a place that feels like <em>yours.</em></h1>
+        <p class="lead">PropBuy brings transparent valuations, verified listings, and a simpler path from first search to front door.</p>
+        <form id="searchForm" class="search">
+          <input id="query" name="q" placeholder="Search by city, title, or property type" autocomplete="off">
+          <button type="submit">Search homes →</button>
+        </form>
+        <div class="trust"><span>✦ Verified listings</span><span>◷ Human-led support</span><span>⌁ Indicative valuations</span></div>
+      </div>
+      <div class="hero-card" aria-hidden="true"><div class="sun"></div><div class="house"><div class="roof"></div><div class="walls"><div class="window"></div><div class="door"></div></div></div><div class="floating"><b>Verified inventory</b><small>Real records, clear next steps</small></div></div>
+    </section>
+
+    <section id="dashboard" class="dashboard auth-only" data-auth-only data-route="dashboard" hidden>
+      <div>
+        <p class="eyebrow">Your PropBuy space</p>
+        <h2>Welcome back, <span id="dashboardUser">home seeker</span>.</h2>
+        <p id="dashboardRole" class="dashboard-copy">Your saved homes and next steps are ready here.</p>
+      </div>
+      <div class="dashboard-actions">
+        <button id="dashboardPrimary">Explore more homes →</button>
+          <button id="dashboardSecondary" class="ghost">Update your search</button>
+        </div>
+        <div id="notificationPanel" class="notification-panel" hidden><strong>Recent activity</strong><div id="notificationsList"></div></div>
+    </section>
+
+    <section id="adminDashboard" class="admin-dashboard" data-route="dashboard" hidden>
+      <div class="section-head"><div><p class="eyebrow">Operations overview</p><h2>Admin analytics</h2><p class="dashboard-copy">Live counts from the PropBuy workflow database.</p></div><div class="dashboard-actions"><button id="downloadAnalytics" class="ghost" type="button">Download CSV</button></div></div>
+      <form id="analyticsFilter" class="filters" aria-label="Analytics date range"><label>From <input id="analyticsFrom" type="date"></label><label>To <input id="analyticsTo" type="date"></label><button class="ghost" type="submit">Apply range</button><button id="clearAnalytics" class="ghost" type="button">All time</button></form>
+      <div id="analyticsCards" class="analytics-cards"><div class="empty">Loading analytics…</div></div>
+      <div class="analytics-breakdown"><div class="tool-card"><h3>Property workflow</h3><div id="workflowBreakdown" class="bar-list"></div></div><div class="tool-card"><h3>Buyer request pipeline</h3><div id="purchaseBreakdown" class="bar-list"></div></div></div>
+      <form id="adminPropertyFilters" class="filters" aria-label="Property management filters"><label>Status <select id="adminStatus"><option value="">All statuses</option><option>SUBMITTED</option><option>NEEDS_INFORMATION</option><option>VALUATION_COMPLETED</option><option>OFFER_ISSUED</option><option>OFFER_DECLINED</option><option>ACQUISITION_IN_PROGRESS</option><option>ACQUIRED</option><option>REJECTED</option></select></label><label>City <input id="adminCity" placeholder="Any city"></label><label>Type <input id="adminPropertyType" placeholder="Apartment, Villa"></label><button class="ghost" type="submit">Filter properties</button></form>
+      <div class="admin-operations"><div class="tool-card"><p class="eyebrow">Review queue</p><h3>Submitted properties</h3><div id="adminProperties"><p class="empty">Loading review queue…</p></div></div><div class="tool-card"><p class="eyebrow">Acquisition</p><h3>Issue offers</h3><div id="adminOffers"><p class="empty">Loading offer queue…</p></div></div><div class="tool-card"><p class="eyebrow">Completion &amp; resale</p><h3>Next workflow step</h3><div id="adminAcquisition"><p class="empty">Loading acquisition queue…</p></div></div><div class="tool-card"><p class="eyebrow">Buyer pipeline</p><h3>Purchase requests</h3><div id="adminRequests"><p class="empty">Loading requests…</p></div></div><div class="tool-card"><p class="eyebrow">Appointments</p><h3>Visit schedule</h3><div id="adminVisits"><p class="empty">Loading visits…</p></div></div></div>
+    </section>
+
+    <section id="sellerDashboard" class="seller-dashboard" data-route="sell-property" hidden>
+      <div class="section-head"><div><p class="eyebrow">Sell Property</p><h2>Turn your property into an opportunity</h2><p class="dashboard-copy">Share your property details, upload photos, and follow review, valuation, and acquisition offers from one account.</p></div></div>
+      <div class="seller-grid">
+        <form id="propertyForm" class="tool-card seller-form">
+          <p class="eyebrow">New submission</p><h3>Tell us about the property</h3>
+          <div class="tool-fields"><label>Title<input id="propertyTitle" required maxlength="180" placeholder="Bright 2-bedroom apartment"></label><label>Property type<select id="propertyType"><option>Apartment</option><option>Villa</option><option>House</option><option>Plot</option></select></label><label>City<input id="propertyCity" required maxlength="80" placeholder="Hyderabad"></label><label>Locality<input id="propertyLocality" maxlength="120" placeholder="Neighbourhood"></label><label>Area (sq ft)<input id="propertyArea" required type="number" min="1" step="0.01"></label><label>Expected price (INR)<input id="propertyPrice" required type="number" min="1" step="1000"></label><label>Bedrooms<input id="propertyBedrooms" type="number" min="0"></label><label>Bathrooms<input id="propertyBathrooms" type="number" min="0"></label><label>Property age<input id="propertyAge" type="number" min="0"></label><label>Furnishing<select id="propertyFurnishing"><option>Unfurnished</option><option>Semi-furnished</option><option>Furnished</option></select></label></div>
+          <label>Description<textarea id="propertyDescription" required maxlength="2000" rows="4" placeholder="Describe the home, condition, and highlights"></textarea></label><label>Amenities<input id="propertyAmenities" maxlength="1000" placeholder="Parking, lift, balcony"></label><label>Image URL (optional)<input id="propertyImageUrl" type="url" maxlength="1000" placeholder="https://example.com/property-photo.jpg"><small class="meta">Use a direct public JPG, PNG, or WEBP URL. Buyers will see this image on the listing.</small></label><label>Property images <input id="propertyImages" type="file" accept="image/jpeg,image/png,image/webp" multiple><small class="meta">Up to 12 JPG, PNG, or WEBP images; 10MB each.</small></label><div id="imagePreview" class="image-preview" aria-live="polite"></div><p id="propertyFormError" class="form-error" role="alert"></p><button id="propertySubmit" type="submit">Submit property for review</button>
+        </form>
+        <div class="tool-card"><div class="compare-heading"><div><p class="eyebrow">Your submissions</p><h3>Workflow progress</h3></div><button id="refreshSeller" class="ghost" type="button">Refresh</button></div><div id="sellerProperties" class="seller-properties"><p class="empty">Log in to see your submissions.</p></div><div class="seller-offers"><p class="eyebrow">Acquisition offers</p><div id="sellerOffers"><p class="empty">No offers yet.</p></div></div></div>
+      </div>
+    </section>
+
+    <section id="buyerDashboard" class="buyer-dashboard" data-route="dashboard" hidden>
+      <div class="section-head"><div><p class="eyebrow">Buyer workspace</p><h2>Your home search, organised</h2><p class="dashboard-copy">Review recommendations, purchase requests, and viewing appointments.</p></div><button id="refreshBuyer" class="ghost" type="button">Refresh</button></div>
+      <div class="buyer-panels"><div class="tool-card"><p class="eyebrow">For you</p><h3>Recommended homes</h3><div id="recommendationsList"><p class="empty">Loading recommendations…</p></div></div><div class="tool-card"><p class="eyebrow">Purchase requests</p><h3>Request status</h3><div id="purchaseRequestsList"><p class="empty">No purchase requests yet.</p></div></div><div class="tool-card"><p class="eyebrow">Appointments</p><h3>Upcoming visits</h3><div id="buyerVisitsList"><p class="empty">No visits booked yet.</p></div></div></div>
+    </section>
+
+    <section id="browse" class="section" data-route="browse">
+      <div class="view-controls"><button class="ghost active-view" id="listViewBtn" type="button">List view</button><button class="ghost" id="mapViewBtn" type="button">Map view</button></div>
+      <div class="section-head"><div><p class="eyebrow">Curated for you</p><h2>Homes worth coming home to</h2></div><button class="ghost" id="loadBtn" type="button">View all listings →</button></div>
+      <form id="filterForm" class="filters" aria-label="Filter listings">
+        <label>City <input id="cityFilter" name="city" placeholder="Any city"></label>
+        <label>Bedrooms <input id="bedroomFilter" name="bedrooms" type="number" min="0" placeholder="Any"></label>
+        <label>Max price <input id="priceFilter" name="maxPrice" type="number" min="0" step="0.01" placeholder="Any"></label><label>Sort <select id="sortFilter"><option value="publishedAt:desc">Newest</option><option value="askingPrice:asc">Price: low to high</option><option value="askingPrice:desc">Price: high to low</option></select></label>
+        <button type="submit" class="ghost">Apply filters</button>
+        <button type="button" class="ghost" id="saveSearchBtn">Save this search</button>
+      </form>
+      <div id="mapView" class="location-view" hidden><div class="location-banner"><strong>Location discovery</strong><span>No map provider or property coordinates are configured. This view uses verified listing cities only; enable a provider before adding markers.</span></div><div id="locationGroups" class="location-groups"></div></div>
+      <div id="listings" class="cards"><div class="empty">Loading available homes…</div></div>
+      <div id="pagination" class="pagination" hidden><button id="previousPage" class="ghost" type="button">← Previous</button><span id="pageSummary"></span><button id="nextPage" class="ghost" type="button">Next →</button></div>
+    </section>
+
+    <section id="savedPage" class="section" data-route="saved">
+      <div class="section-head"><div><p class="eyebrow">Your shortlist</p><h2>Saved homes</h2><p class="dashboard-copy">Keep the properties you want to revisit.</p></div></div>
+      <div id="savedHomesList" class="cards"><p class="empty">Log in as a buyer to view saved homes.</p></div>
+    </section>
+
+    <section id="buyerTools" class="tools-section" data-route="browse">
+      <div class="section-head"><div><p class="eyebrow">Plan with confidence</p><h2>Helpful buyer tools</h2></div><span class="tool-note">All calculations are estimates.</span></div>
+      <div class="tools-grid">
+        <form id="affordabilityForm" class="tool-card">
+          <p class="eyebrow">Affordability calculator</p><h3>What could your monthly payment look like?</h3>
+          <div class="tool-fields"><label>Property price<input id="loanPrice" type="number" min="0" step="1000" value="7800000"></label><label>Down payment<input id="loanDownPayment" type="number" min="0" step="1000" value="1560000"></label><label>Interest rate %<input id="loanRate" type="number" min="0" step="0.1" value="8.5"></label><label>Loan term (years)<input id="loanYears" type="number" min="1" max="40" value="20"></label></div>
+          <button type="submit">Calculate payment</button><div id="paymentResult" class="tool-result" aria-live="polite">Enter your details to see an estimate.</div>
+        </form>
+        <div id="comparePanel" class="tool-card compare-card" hidden>
+          <div class="compare-heading"><div><p class="eyebrow">Compare homes</p><h3>See your shortlist side by side</h3></div><button id="clearCompare" class="ghost" type="button">Clear</button></div>
+          <div id="compareContent" class="compare-content"><p class="empty">Choose up to three homes using “Compare”.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how" class="dark" data-route="how"><p class="eyebrow">The PropBuy difference</p><h2>Clear at every step.</h2><div class="steps"><div><i>01</i><h3>Tell us what you need</h3><p>Search naturally or browse curated homes that match your life.</p></div><div><i>02</i><h3>See the real picture</h3><p>Transparent details and indicative valuations, without the noise.</p></div><div><i>03</i><h3>Move with confidence</h3><p>From first enquiry to keys in hand, we stay in your corner.</p></div></div></section>
+  </main>
+
+  <footer><span class="brand">prop<span>buy</span></span><span>Homes, thoughtfully found.</span><button id="configApiBtn" class="link-button" type="button" style="font-size:12px;opacity:0.75;cursor:pointer;">⚙ API Settings</button></footer>
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <dialog id="visitDialog">
+    <form id="visitForm" method="dialog" class="auth-form">
+      <button class="dialog-close" type="button" id="closeVisit" aria-label="Close">×</button>
+      <p class="eyebrow">Plan a viewing</p><h2>Request a property visit</h2>
+      <p id="visitPropertyName" class="meta"></p>
+      <label>Date and time<input id="visitDate" type="datetime-local" required></label>
+      <p id="visitError" class="form-error" role="alert"></p>
+      <button id="visitSubmit" type="submit">Request visit</button>
+    </form>
+  </dialog>
+  <dialog id="purchaseDialog">
+    <form id="purchaseForm" method="dialog" class="auth-form">
+      <button class="dialog-close" type="button" id="closePurchase" aria-label="Close">×</button><p class="eyebrow">Make an enquiry</p><h2>Request to purchase</h2><p id="purchasePropertyName" class="meta"></p><label>Proposed price (INR)<input id="purchasePrice" type="number" min="1" step="1000" required></label><label>Message<textarea id="purchaseMessage" rows="4" maxlength="1000" placeholder="Tell the seller what you are looking for"></textarea></label><p id="purchaseError" class="form-error" role="alert"></p><button id="purchaseSubmit" type="submit">Send purchase request</button>
+    </form>
+  </dialog>
+  <dialog id="offerDialog">
+    <form id="offerForm" method="dialog" class="auth-form"><button class="dialog-close" type="button" id="closeOffer" aria-label="Close">×</button><p class="eyebrow">Acquisition offer</p><h2>Issue an offer</h2><p id="offerPropertyName" class="meta"></p><label>Offer amount (INR)<input id="offerAmount" type="number" min="1" step="1000" required></label><label>Valid until<input id="offerValidUntil" type="date" required></label><label>Explanation<textarea id="offerExplanation" rows="4" maxlength="1000" required placeholder="Explain the offer and next steps"></textarea></label><p id="offerError" class="form-error" role="alert"></p><button id="offerSubmit" type="submit">Issue offer</button></form>
+  </dialog>
+  <dialog id="propertyDetailDialog"><div class="detail-dialog"><button class="dialog-close" type="button" id="closePropertyDetail" aria-label="Close">×</button><p class="eyebrow">Property record</p><h2 id="propertyDetailTitle">Property details</h2><div id="propertyDetailBody"><p class="empty">Loading details…</p></div></div></dialog>
+  <dialog id="authDialog">
+    <form id="authForm" method="dialog" class="auth-form">
+      <button class="dialog-close" type="button" id="closeAuth" aria-label="Close">×</button>
+      <p class="eyebrow" id="authEyebrow">Welcome back</p>
+      <h2 id="authTitle">Log in</h2>
+      <label id="nameField" hidden>Name<input id="authName" name="name" autocomplete="name"></label>
+      <label>Email<input id="authEmail" name="email" type="email" required autocomplete="email"></label>
+      <label>Password<input id="authPassword" name="password" type="password" required minlength="8" autocomplete="current-password"></label>
+      <p id="authError" class="form-error" role="alert"></p>
+      <button id="authSubmit" type="submit">Log in</button>
+      <button id="authSwitch" class="link-button" type="button">Create an account</button>
+    </form>
+  </dialog>
+  <dialog id="apiConfigDialog">
+    <form id="apiConfigForm" method="dialog" class="auth-form">
+      <button class="dialog-close" type="button" id="closeApiConfig" aria-label="Close">×</button>
+      <p class="eyebrow">Connection</p>
+      <h2>Backend API</h2>
+      <p class="meta" style="margin-top:-6px;">Configure your Render backend URL when frontend is deployed on Vercel.</p>
+      <label>Backend URL<input id="apiBaseInput" type="url" placeholder="https://propbuy-backend.onrender.com"></label>
+      <p id="apiConfigStatus" class="meta" style="min-height:18px;font-size:12px;margin:0;"></p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+        <button id="saveApiBtn" type="button">Save URL</button>
+        <button id="testApiBtn" class="ghost" type="button">Test connection</button>
+        <button id="resetApiBtn" class="ghost" type="button">Use Same Origin</button>
+      </div>
+    </form>
+  </dialog>
+  <script>
+    // PropBuy API Configuration:
+    // When served separately (e.g. on Vercel), it reads from window.PROPBUY_API_BASE or localStorage.
+    window.PROPBUY_API_BASE = window.PROPBUY_API_BASE || localStorage.getItem('PROPBUY_API_BASE') || 'https://propbuy-backend-8ztf.onrender.com';
+  </script>
+  <script src="/assets/app.js"></script>
+</body>
+</html>
